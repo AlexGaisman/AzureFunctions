@@ -12,7 +12,8 @@ namespace MyFunctionFirst
     {
         Task<List<string>> GetAllBlobs(string containerName);
         Task<string> GetBlob(string name, string containerName);
-        Task<bool> Upload(string name, Stream content, string containerName, string contentType);
+        Task<bool> Upload(string name, Stream content, string containerName, 
+            string contentType, IDictionary<string, string> methadata = null);
 
         Task<bool> Delete(string name, string containerName);
     }

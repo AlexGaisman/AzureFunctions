@@ -41,9 +41,33 @@ namespace MyFunctionFirst
             return containerName;
         }
 
-        public Task<List<string>> GetAllContainersAndBlobs()
+        public async Task<List<string>> GetAllContainersAndBlobs()
         {
-            throw new NotImplementedException();
+            List<string> containerAndBlobNames = new();
+            containerAndBlobNames.Add("Account Name :" + _blobClient.AccountName);
+            containerAndBlobNames.Add("---------------------------");
+            await foreach (BlobContainerItem blobContainerItem in _blobClient.GetBlobContainersAsync())
+            {
+                containerAndBlobNames.Add("-- " + blobContainerItem.Name);
+                BlobContainerClient blobContainer = _blobClient.GetBlobContainerClient(blobContainerItem.Name);
+                await foreach(BlobItem blobItem in blobContainer.GetBlobsAsync())
+                {
+                    // get methadata
+                    var blobClient = blobContainer.GetBlobClient(blobItem.Name);
+                    BlobProperties blobProperties = await blobClient.GetPropertiesAsync();
+
+                    foreach(var pair in  blobProperties.Metadata)
+                    {
+                        containerAndBlobNames.Add($"--- Property {pair.Key}={pair.Value}");
+                    }
+
+
+                    containerAndBlobNames.Add("--- " + blobItem.Name);
+                }
+
+                containerAndBlobNames.Add("---------------------------------");
+            }
+            return containerAndBlobNames;
         }
     }
 }

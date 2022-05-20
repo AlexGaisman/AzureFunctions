@@ -50,7 +50,8 @@ namespace MyFunctionFirst
         }
 
         public async Task<bool> Upload(string name, Stream content, 
-                                 string containerName, string contentType)
+                                 string containerName, string contentType, 
+                                 IDictionary<string,string> methadata = null)
         {
             BlobContainerClient blobContainerCLient = _blobClient.GetBlobContainerClient(containerName);
             var blobClient = blobContainerCLient.GetBlobClient(name);
@@ -60,7 +61,12 @@ namespace MyFunctionFirst
                 ContentType = contentType
             };
 
-            var result = await blobClient.UploadAsync(content, httpHeaders);
+            Azure.Response<BlobContentInfo> result = null;
+
+            if(methadata == null)
+                 result = await blobClient.UploadAsync(content, httpHeaders);
+            else 
+                result = await blobClient.UploadAsync(content, httpHeaders, methadata);
 
             return result != null;
         }

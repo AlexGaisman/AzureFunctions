@@ -17,13 +17,17 @@ namespace MyFunctionFirst
         private readonly IConfiguration _configuration;
         private readonly IContainerService _containerService;
         private readonly IBlobService _blobService;
+        private readonly ITableService _tableService;
 
         public Function1(IConfiguration configuration, 
-            IContainerService containerService, IBlobService blobService)
+            IContainerService containerService, 
+            IBlobService blobService,
+            ITableService tableService)
         {
             _configuration = configuration;
             _containerService = containerService;
             _blobService = blobService;
+            _tableService = tableService;
         }
 
         [FunctionName("Function1")]
@@ -38,6 +42,9 @@ namespace MyFunctionFirst
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             name = name ?? data?.name;
+
+
+            var digest = await _containerService.GetAllContainersAndBlobs();
 
            var names = await  _containerService.GetAllContainers();
 
@@ -57,6 +64,26 @@ namespace MyFunctionFirst
             string responseMessage = string.IsNullOrEmpty(name)
                 ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
                 : $"Hello, {name}. This HTTP triggered function executed successfully.";
+
+            return new OkObjectResult(responseMessage);
+        }
+
+        [FunctionName("TableTest")]
+        public async Task<IActionResult> TableTest(
+            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
+            ILogger log)
+        {
+            log.LogInformation("C# HTTP trigger function processed a request.");
+
+           var result = await _tableService.CreateTable("mytable");
+
+            result = await _tableService.CreateRecord("mytable", "Snake", "Andrea", 1000);
+            result = await _tableService.CreateRecord("mytable", "Snake", "Stefano", 2000);
+
+            var record = await _tableService.GetRecordById("mytable", "Snake", "Stefano");
+
+            string responseMessage =
+                "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.";
 
             return new OkObjectResult(responseMessage);
         }
