@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyFunctionFirst
+namespace MyFunctionFirst.Services
 {
     internal class BlobService : IBlobService
     {
@@ -33,7 +33,7 @@ namespace MyFunctionFirst
 
             var blobNames = new List<string>();
 
-            await foreach(var blob in blobs)
+            await foreach (var blob in blobs)
             {
                 blobNames.Add(blob.Name);
             }
@@ -49,9 +49,9 @@ namespace MyFunctionFirst
             return blobClient.Uri.AbsoluteUri;
         }
 
-        public async Task<bool> Upload(string name, Stream content, 
-                                 string containerName, string contentType, 
-                                 IDictionary<string,string> methadata = null)
+        public async Task<bool> Upload(string name, Stream content,
+                                 string containerName, string contentType,
+                                 IDictionary<string, string> methadata = null)
         {
             BlobContainerClient blobContainerCLient = _blobClient.GetBlobContainerClient(containerName);
             var blobClient = blobContainerCLient.GetBlobClient(name);
@@ -63,9 +63,9 @@ namespace MyFunctionFirst
 
             Azure.Response<BlobContentInfo> result = null;
 
-            if(methadata == null)
-                 result = await blobClient.UploadAsync(content, httpHeaders);
-            else 
+            if (methadata == null)
+                result = await blobClient.UploadAsync(content, httpHeaders);
+            else
                 result = await blobClient.UploadAsync(content, httpHeaders, methadata);
 
             return result != null;

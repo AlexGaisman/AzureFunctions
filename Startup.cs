@@ -3,6 +3,7 @@ using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.WindowsAzure.Storage;
+using MyFunctionFirst.Services;
 
 [assembly: FunctionsStartup(typeof(MyFunctionFirst.Startup))]
 
@@ -19,7 +20,7 @@ namespace MyFunctionFirst
             //    return new MyService();
             //});
 
-            var blob = new BlobServiceClient(configuration.GetValue<string>("blobConnection"));
+            var blob = new BlobServiceClient(configuration.GetValue<string>("BlobConnection"));
             var storageAccountName = configuration.GetValue<string>("AzureStorageAccountName");
             var storageAccountKey = configuration.GetValue<string>("AzureStorageAccountKey");
             var storageCredentials = new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(storageAccountName, storageAccountKey);

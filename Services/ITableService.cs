@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyFunctionFirst
+namespace MyFunctionFirst.Services
 {
     public interface ITableService
     {

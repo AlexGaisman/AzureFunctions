@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyFunctionFirst
+namespace MyFunctionFirst.Services
 {
     internal class ContainerService : IContainerService
     {
@@ -33,7 +33,7 @@ namespace MyFunctionFirst
         {
             List<string> containerName = new();
 
-            await foreach(BlobContainerItem item in _blobClient.GetBlobContainersAsync())
+            await foreach (BlobContainerItem item in _blobClient.GetBlobContainersAsync())
             {
                 containerName.Add(item.Name);
             }
@@ -50,13 +50,13 @@ namespace MyFunctionFirst
             {
                 containerAndBlobNames.Add("-- " + blobContainerItem.Name);
                 BlobContainerClient blobContainer = _blobClient.GetBlobContainerClient(blobContainerItem.Name);
-                await foreach(BlobItem blobItem in blobContainer.GetBlobsAsync())
+                await foreach (BlobItem blobItem in blobContainer.GetBlobsAsync())
                 {
                     // get methadata
                     var blobClient = blobContainer.GetBlobClient(blobItem.Name);
                     BlobProperties blobProperties = await blobClient.GetPropertiesAsync();
 
-                    foreach(var pair in  blobProperties.Metadata)
+                    foreach (var pair in blobProperties.Metadata)
                     {
                         containerAndBlobNames.Add($"--- Property {pair.Key}={pair.Value}");
                     }

@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyFunctionFirst
+namespace MyFunctionFirst.Services
 {
-    public class TableService: ITableService
+    public class TableService : ITableService
     {
         private readonly CloudStorageAccount _cloudStorageAccount;
         public TableService(CloudStorageAccount cloudStorageAccount)
@@ -21,7 +21,7 @@ namespace MyFunctionFirst
         {
             var tableClient = _cloudStorageAccount.CreateCloudTableClient();
             var table = tableClient.GetTableReference(name);
-           return table.CreateIfNotExistsAsync();
+            return table.CreateIfNotExistsAsync();
         }
 
         public async Task<bool> CreateRecord(string tableName, string game, string user, int score)

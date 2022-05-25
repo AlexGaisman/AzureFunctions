@@ -9,18 +9,19 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Azure.Storage.Blobs;
 using Microsoft.Extensions.Configuration;
+using MyFunctionFirst.Services;
 
-namespace MyFunctionFirst
+namespace MyFunctionFirst.Functions
 {
-    public  class Function1
+    public class Function1
     {
         private readonly IConfiguration _configuration;
         private readonly IContainerService _containerService;
         private readonly IBlobService _blobService;
         private readonly ITableService _tableService;
 
-        public Function1(IConfiguration configuration, 
-            IContainerService containerService, 
+        public Function1(IConfiguration configuration,
+            IContainerService containerService,
             IBlobService blobService,
             ITableService tableService)
         {
@@ -31,7 +32,7 @@ namespace MyFunctionFirst
         }
 
         [FunctionName("Function1")]
-        public  async Task<IActionResult> Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
@@ -46,7 +47,7 @@ namespace MyFunctionFirst
 
             var digest = await _containerService.GetAllContainersAndBlobs();
 
-           var names = await  _containerService.GetAllContainers();
+            var names = await _containerService.GetAllContainers();
 
             //  await _containerService.CreateContainer("new");
             // var blobCLient = new BlobServiceClient(_configuration.GetValue<string>("BlobConnection"));
@@ -75,7 +76,7 @@ namespace MyFunctionFirst
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-           var result = await _tableService.CreateTable("mytable");
+            var result = await _tableService.CreateTable("mytable");
 
             result = await _tableService.CreateRecord("mytable", "Snake", "Andrea", 1000);
             result = await _tableService.CreateRecord("mytable", "Snake", "Stefano", 2000);
